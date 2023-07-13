@@ -61,3 +61,5 @@ AuthorizedKeyFile /root/.ssh/authorized_keys
 ```
 systemctl restart sshd.service
 ```
+
+> 如果你用 vm 虚拟机的话，ssh 的 IP 是第一个，192.168.227.xxx
