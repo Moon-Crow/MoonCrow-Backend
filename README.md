@@ -94,7 +94,7 @@ nano /etc/selinux/config
 
 
 
-#### 安装
+#### 安装（未完成）
 
 > 建议在 root 下把 datakit 的依赖也安装完再回来。
 
@@ -105,8 +105,6 @@ passwd omm
 mkdir -p /opt/software/openGauss
 wget https://opengauss.obs.cn-south-1.myhuaweicloud.com/5.0.0/x86_openEuler_2203/openGauss-5.0.0-openEuler-64bit-all.tar.gz
 tar -xvf openGauss-5.0.0-openEuler-64bit-all.tar.gz
-tar -jxf openGauss-5.0.0-openEuler-64bit.tar.bz2 -C /opt/software/openGauss
-chown -R omm /opt/software/openGauss
 ```
 
 重进服务器，以 omm 账户登录，或者 `su - omm` 切换
@@ -125,17 +123,9 @@ chown -R omm /opt/software/openGauss
 
 现在，你已经以 omm 登录
 
-```
-cd /opt/software/openGauss/simpleInstall
-sh install.sh  -w "xxxx" &&source ~/.bashrc # xxxx 为密码，中间问你要不要创建 demo 数据库，选是
-```
+未完待续
 
-检查是否安装成功
-
-```
-ps ux | grep gaussdb
-gs_ctl query -D /opt/software/openGauss/data/single_node
-```
+> 注意，此时，openGauss 默认运行在端口 5432 上
 
 ### 安装 Datakit
 #### 安装依赖
@@ -146,5 +136,26 @@ gs_ctl query -D /opt/software/openGauss/data/single_node
 
 `install-depency.sh`
 
+完事之后似乎有点问题，java 的环境变量还得手动配
+
+写在 `/root/.bashrc` 里面
+
+```
+export JAVA_HOME=/etc/jdk11
+export PATH=$JAVA_HOME/bin:$PATH
+export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+```
+
 ### 安装datakit
+
+```
+wget https://opengauss.obs.cn-south-1.myhuaweicloud.com/latest/tools/Datakit/Datakit-5.0.0.tar.gz
+mkdir -p /ops/server/openGauss-visualtool/logs /ops/server/openGauss-visualtool/config /ops/ssl /ops/files
+useradd -m ops
+tar -xvf Datakit-5.0.0.tar.gz -C /ops/server/openGauss-visualtool
+cd /ops/server/openGauss-visualtool
+cp application-temp.yml config/application-cus.yml
+```
+
+然后手动改 `application-cus.yml`
 
