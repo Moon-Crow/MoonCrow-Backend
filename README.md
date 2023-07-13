@@ -66,4 +66,8 @@ systemctl restart sshd.service
 
 ### 安装依赖
 
-见 `install-depency.sh`
+官方仓库 dev 分支下面有脚本，但有点问题
+
+见本仓库下我改过的最新脚本：
+
+`install-depency.sh`
