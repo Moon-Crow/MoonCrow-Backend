@@ -4,7 +4,7 @@
 
 ## 配置 openEuler 开发环境
 
-基于 22.03 LTS SP2
+基于 **x86** 22.03 LTS SP1，SP2 应该差不多
 
 ISO镜像：https://www.openeuler.org/zh/download/
 
@@ -14,18 +14,22 @@ https://repo.openeuler.openatom.cn/openEuler-22.03-LTS-SP2/ISO/x86_64/openEuler-
 
 ### 系统安装
 
+安装语言：**英文！！**
+
 ref: https://blog.csdn.net/weixin_42228815/article/details/129403406
 
 为了省事，在选择软件源的时候一定要勾选以下这些
 
-基本环境：服务器
+基本环境：~~服务器~~虚拟化主机
 
 - 网络文件系统客户端
 - Linux 的远程管理
 - 开发工具（gcc）
-- openGauss 数据库
+- ~~openGauss 数据库~~（deprecated，版本不对，内置的太旧了）
 
 以及记得开 root 账户
+
+打开后先 `yum update` 一下
 
 ### 配置 vscode ssh
 
@@ -55,8 +59,6 @@ GatewayPorts yes
 
 ```
 PubkeyAuthentication yes
-....
-AuthorizedKeyFile /root/.ssh/authorized_keys
 ```
 
 然后把公钥传到 /root/.ssh/authorized_keys 里（新建文件夹+文件，公钥复制进去）
@@ -70,14 +72,15 @@ systemctl restart sshd.service
 > 如果你用 vm 虚拟机的话，ssh 的 IP 是第一个，192.168.227.xxx
 
 
-### 安装 openGauss（deprecated）
+### 安装 openGauss
 
 ```
 groupadd dbgroup
 useradd -g dbgroup omm
 passwd omm
 mkdir -p /opt/software/openGauss
-tar -jxf openGauss-5.0.0-openEuler-64bit.tar.bz2 -C /opt/software/openGauss
+wget https://opengauss.obs.cn-south-1.myhuaweicloud.com/5.0.0/x86_openEuler_2203/openGauss-5.0.0-openEuler-64bit-all.tar.gz
+tar -jxf openGauss-5.0.0-openEuler-64bit-all.tar.gz -C /opt/software/openGauss
 chown -R omm /opt/software/openGauss
 ```
 
