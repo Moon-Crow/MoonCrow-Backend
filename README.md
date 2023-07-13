@@ -244,13 +244,13 @@ https://docs.opengauss.org/zh/docs/5.0.0/docs/InstallationGuide/%E5%88%9B%E5%BB%
 
 **注意2** 
 
-初始化安装环境里：
+第二大步，初始化安装环境里：
 
-7.使用gs_preinstall准备好安装环境。若为共用环境需加入--sep-env-file=ENVFILE参数分离环境变量，避免与其他用户相互影响，ENVFILE为用户自行指定的环境变量分离文件的路径，可以为一个空文件。
+> 7.使用gs_preinstall准备好安装环境。若为共用环境需加入--sep-env-file=ENVFILE参数分离环境变量，避免与其他用户相互影响，ENVFILE为用户自行指定的环境变量分离文件的路径，可以为一个空文件。
 
-有很多种方式，选第一个，最傻瓜的：
+有很多种方式，选第一个，最傻瓜的，然后不用管共用环境啥的：
 
-采用交互模式执行前置，并在执行过程中自动创建操作系统root用户互信和omm用户互信：
+> 采用交互模式执行前置，并在执行过程中自动创建操作系统root用户互信和omm用户互信：
 
 ------
 
@@ -277,9 +277,9 @@ gsql -d postgres -p 15400
 
 `install-depency.sh`
 
-完事之后似乎有点问题，java 的环境变量还得手动配
+完事之后还是有点问题，java 的环境变量还得手动配
 
-写在 `/root/.bashrc` 里面
+以下写在 `/root/.bashrc` 里面
 
 ```
 export JAVA_HOME=/etc/jdk11
@@ -391,3 +391,5 @@ export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
 运行输出在 `/ops/server/openGauss-visualtool/logs/visualtool-main.out`
 
 一切顺利的话，访问 `https://ip:9494` 就可以看到登录界面了，管理员用户名 `admin`，密码 `admin123`
+
+> 最开始，解压 Datakit-5.0.0 的时候会蹦出来一堆，除了 visualtool-main.jar 和 application-temp.yml 之外，其他的几乎都是插件，新建一个文件夹 `/ops/server/openGauss-visualtool/visualtool-plugin` 然后扔进去，相当于手动装插件，当然你也可以在面板里面装插件，但没必要
