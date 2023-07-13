@@ -92,16 +92,22 @@ nano /etc/selinux/config
 
 重启 `reboot`
 
+继续关
 
+```
+systemctl disable firewalld.service
+systemctl stop firewalld.service
+```
+
+`nano /etc/profile`
+
+`export LANG=en_US.UTF-8`
 
 #### 安装（未完成）
 
 > 建议在 root 下把 datakit 的依赖也安装完再回来。
 
 ```
-groupadd dbgroup
-useradd -g dbgroup omm
-passwd omm
 mkdir -p /opt/software/openGauss
 wget https://opengauss.obs.cn-south-1.myhuaweicloud.com/5.0.0/x86_openEuler_2203/openGauss-5.0.0-openEuler-64bit-all.tar.gz
 tar -xvf openGauss-5.0.0-openEuler-64bit-all.tar.gz
