@@ -74,20 +74,39 @@ systemctl restart sshd.service
 
 ### 安装 openGauss
 
+#### 依赖
+
+装一圈依赖
+
+```
+sudo yum install libaio-devel flex bison ncurses-devel glibc-devel patch readline-devel libnsl -y
+```
+
+> 还有一个 redhat-lsb-core 包找不到，似乎不影响
+
+```
+nano /etc/selinux/config
+```
+
+把 `SELINUX=enforcing` 改成 `SELINUX=disabled`
+
+重启 `reboot`
+
+
+
+#### 安装
+
+> 建议在 root 下把 datakit 的依赖也安装完再回来。
+
 ```
 groupadd dbgroup
 useradd -g dbgroup omm
 passwd omm
 mkdir -p /opt/software/openGauss
 wget https://opengauss.obs.cn-south-1.myhuaweicloud.com/5.0.0/x86_openEuler_2203/openGauss-5.0.0-openEuler-64bit-all.tar.gz
-tar -jxf openGauss-5.0.0-openEuler-64bit-all.tar.gz -C /opt/software/openGauss
+tar -xvf openGauss-5.0.0-openEuler-64bit-all.tar.gz
+tar -jxf openGauss-5.0.0-openEuler-64bit.tar.bz2 -C /opt/software/openGauss
 chown -R omm /opt/software/openGauss
-```
-
-然后，先改一下 `PATH`
-
-```
-export PATH=/opt/software/openGauss/bin:$PATH
 ```
 
 重进服务器，以 omm 账户登录，或者 `su - omm` 切换
@@ -108,7 +127,7 @@ export PATH=/opt/software/openGauss/bin:$PATH
 
 ```
 cd /opt/software/openGauss/simpleInstall
-sh install.sh  -w xxxx # xxxx 为密码，中间问你要不要创建 demo 数据库，选是
+sh install.sh  -w "xxxx" &&source ~/.bashrc # xxxx 为密码，中间问你要不要创建 demo 数据库，选是
 ```
 
 检查是否安装成功
