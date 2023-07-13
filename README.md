@@ -55,3 +55,9 @@ AuthorizedKeyFile /root/.ssh/authorized_keys
 ```
 
 然后把公钥传到 /root/.ssh/authorized_keys 里（新建文件夹+文件，公钥复制进去）
+
+最后，记得重启ssh
+
+```
+systemctl restart sshd.service
+```
