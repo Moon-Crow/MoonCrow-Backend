@@ -64,47 +64,6 @@ systemctl restart sshd.service
 
 > 如果你用 vm 虚拟机的话，ssh 的 IP 是第一个，192.168.227.xxx
 
-### java 安装
+### 安装依赖
 
-```
-mkdir /java
-cd /java
-wget wget https://mirrors.huaweicloud.com/java/jdk/8u192-b12/jdk-8u192-linux-x64.tar.gz
-tar -zxvf jdk-8u192-linux-x64.tar.gz
-```
-
-```
-nano /etc/profile
-```
-
-加三行
-
-```
-export JAVA_HOME=/java/jdk1.8.0_192
-export PATH=$PATH:$JAVA_HOME/bin
-export CLASSPATH=.:%JAVA_HOME%/lib/dt.jar:%JAVA_HOME%/lib/tools.jar
-```
-
-保存后
-
-```
-source /etc/profile
-```
-
-验证一下
-
-```
-java -version
-```
-
-没问题的话，还是加那3句在 bashrc 里
-
-```
-nano /etc/bashrc
-```
-
-```
-export JAVA_HOME=/java/jdk1.8.0_192
-export PATH=$PATH:$JAVA_HOME/bin
-export CLASSPATH=.:%JAVA_HOME%/lib/dt.jar:%JAVA_HOME%/lib/tools.jar
-```
+见 `install-depency.sh`
