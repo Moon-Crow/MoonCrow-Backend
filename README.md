@@ -240,7 +240,7 @@ https://docs.opengauss.org/zh/docs/5.0.0/docs/InstallationGuide/%E5%88%9B%E5%BB%
 
 192.168.0.1 按照你 ssh 时候的 IP 填写
 
------- 
+------
 
 **注意2** 
 
@@ -251,6 +251,60 @@ https://docs.opengauss.org/zh/docs/5.0.0/docs/InstallationGuide/%E5%88%9B%E5%BB%
 有很多种方式，选第一个，最傻瓜的，然后不用管共用环境啥的：
 
 > 采用交互模式执行前置，并在执行过程中自动创建操作系统root用户互信和omm用户互信：
+
+```
+[root@bogon script]# ./gs_preinstall -U omm -G dbgrp -X /opt/software/openGauss/cluster_config.xml
+/opt/software/openGauss/script/domain_utils/sql_handler/../../../lib/ipaddress.py:1106: SyntaxWarning: 'str' object is not callable; perhaps you missed a comma?
+  raise TypeError("%s and %s are not of the same version" (a, b))
+Parsing the configuration file.
+Successfully parsed the configuration file.
+Installing the tools on the local node.
+Successfully installed the tools on the local node.
+Setting host ip env
+Successfully set host ip env.
+Are you sure you want to create the user[omm] (yes/no)? yes
+Please enter password for cluster user.
+Password: 
+Please enter password for cluster user again.
+Password: 
+Generate cluster user password files successfully.
+
+Successfully created [omm] user on all nodes.
+Preparing SSH service.
+Successfully prepared SSH service.
+Checking OS software.
+Successfully check os software.
+Checking OS version.
+Successfully checked OS version.
+Creating cluster's path.
+Successfully created cluster's path.
+Set and check OS parameter.
+Setting OS parameters.
+Successfully set OS parameters.
+Warning: Installation environment contains some warning messages.
+Please get more details by "/opt/software/openGauss/script/gs_checkos -i A -h bogon --detail".
+Set and check OS parameter completed.
+Preparing CRON service.
+Successfully prepared CRON service.
+Setting user environmental variables.
+Successfully set user environmental variables.
+Setting the dynamic link library.
+Successfully set the dynamic link library.
+Setting Core file
+Successfully set core path.
+Setting pssh path
+Successfully set pssh path.
+Setting Cgroup.
+Successfully set Cgroup.
+Set ARM Optimization.
+No need to set ARM Optimization.
+Fixing server package owner.
+Setting finish flag.
+Successfully set finish flag.
+Preinstallation succeeded.
+```
+
+
 
 ------
 
@@ -368,6 +422,21 @@ passwd ops
 chown -R ops:ops /ops
 ```
 
+### genkey
+
+```
+keytool -genkey -noprompt \
+    -dname "CN=opengauss, OU=opengauss, O=opengauss, L=Beijing, S=Beijing, C=CN"\
+    -alias opengauss\
+    -storetype PKCS12 \
+    -keyalg RSA \
+    -keysize 2048 \
+    -keystore /ops/ssl/keystore.p12 \
+    -validity 3650 \
+    -storepass 123456
+fi
+```
+
 #### 启动datakit
 
 切换到 ops 用户
@@ -376,7 +445,7 @@ chown -R ops:ops /ops
 su - ops
 ```
 
-测试一下 `java -version` 大概率是找不到命令，所以你要在 `/home/ops/.bashrc` 里面也加上
+测试一下 `java -version` 大概率是找不到命令，所以你要在 `/home/ops/.bashrc` 里面也加上，然后 `source .bashrc`
 
 ```
 export JAVA_HOME=/etc/jdk11
