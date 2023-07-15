@@ -434,7 +434,6 @@ keytool -genkey -noprompt \
     -keystore /ops/ssl/keystore.p12 \
     -validity 3650 \
     -storepass 123456
-fi
 ```
 
 #### 启动datakit
