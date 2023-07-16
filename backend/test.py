@@ -34,10 +34,24 @@ def demo():
     req = request("/demo", data)
     print(req.json())
 
+def model(model="cluster"):
+    print("model")
+    data= {
+        "name": "test",
+        "table": "titanic",
+        "model": model,
+        "columns": ["Age","Pclass", "Survived"]
+    }
+    if model=="cluster":
+        data.update({"modelParams": {"k": 3}})
+    req = request("/model", data)
+    print(req.json())
+
 def test():
     connect()
     show()
     demo()
+    model()
     
 if __name__ == "__main__":
     test()
