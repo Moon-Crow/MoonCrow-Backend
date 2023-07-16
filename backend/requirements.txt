@@ -1,0 +1,6 @@
+py_opengauss
+sqlalchemy
+fastapi
+uvicorn[standard]
+numpy
+pandas
