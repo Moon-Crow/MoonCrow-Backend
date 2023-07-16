@@ -18,10 +18,10 @@ def read_root():
     return Response("Moon Crow") # 没错，这是我们的公司和产品名
 
 class NewConnect(BaseModel):
-    connName: str
-    database: str
-    user: str
-    password: str
+    connName: str = "test"
+    database: str = "postgres"
+    user: str = "gauss"
+    password: str = "2023@gauss"
     host: Optional[str] = "127.0.0.1"
     port: Optional[int] = 15400
 
@@ -44,9 +44,9 @@ def createConnect(connect: NewConnect)->NormalResponse:
         return NormalResponse(success=False, message=str(e))
     
 class Demo(BaseModel):
-    connName: str
-    table: str
-    dataset: str
+    connName: str = "test"
+    table: str = "titanic"
+    dataset: str = "titanic"
 
 DATASET = ["titanic"]
 
@@ -85,24 +85,56 @@ def createDemoTable(demo: Demo) -> NormalResponse:
         return NormalResponse(success=False, message=str(e))
 
 class Show(BaseModel):
-    connName: str
+    connName: str = "test"
 
 class ShowResponse(BaseModel):
     success: bool
     message: Optional[str] = None
-    data: Optional[list] = [["tableName1", ["col11", "col12"]], ["tableName2", ["col21", "col22"]]]
-
-@app.post("/show", description="显示数据库中的表，和对应的列，该函数未完成，openGauss 不知道怎么获得列信息")
+    data: Optional[list] = [
+            {
+                "tableName": "titanic",
+                "columns": [
+                    {
+                        "name": "PassengerId",
+                        "type": "numeric"
+                    },
+                    {
+                        "name": "Name",
+                        "type": "text"
+                    },
+                ]
+            },
+            {
+                "tableName": "test",
+                "columns": [
+                    {
+                        "name": "col",
+                        "type": "numeric"
+                    }
+                ]
+            }
+        ]
+@app.post("/show", description="显示数据库中的表，和对应的列及类型，现阶段，可以假设类型只有 str 和 numeric 两种。")
 def show(connect: Show) -> ShowResponse:
     try:
-        db, _ = connects[connect.connName]
-        result = db.prepare(f"SELECT tablename FROM pg_tables WHERE SCHEMANAME = 'public' AND CREATED >= '2023-07-15';")
+        db, conn = connects[connect.connName]
+        result = db.prepare(f"SELECT tablename FROM pg_tables WHERE SCHEMANAME = '{conn.user}';")
         table_name = result()
+        table_name = [t[0] for t in table_name]
         columns = []
+        get_col = db.prepare("SELECT column_name, data_type FROM information_schema.columns WHERE table_name = $1;")
+        data = []
         for d in table_name:
-            column = [] # TODO
+            column = get_col(f"{d}")
             columns.append(column)
-        return ShowResponse(success=True, data=list(zip(table_name, columns)))
+            data.append({
+                "tableName": d,
+                "columns": [{
+                    "name": c[0],
+                    "type": c[1]
+                } for c in column]
+            })
+        return ShowResponse(success=True, data=data)
     except Exception as e:
         return ShowResponse(success=False, message=str(e), data=None)
 
@@ -110,7 +142,7 @@ class Model(BaseModel):
     connName: str = "test"
     table: str = "titanic"
     model: str = "linear"
-    columns: list = ["Age","Pclass", "Survived"]
+    columns: list = ["Age", "Pclass", "Survived"]
     modelParams: Optional[dict] = {}
     dropna: Optional[bool] = True
 
@@ -136,15 +168,22 @@ def select_from(db, columns, table, dropna=True, sample_size=10000):
     return cols
 
 modelAPIDesc = '''
+
+输出的数据格式为：
+
+select 出来的原数据，和为了预测生成的测试点，其列名前加上 pred
+
 目前实现的模型有：
 
 select：从 table 中选择 columns 列的数据
 
 linear: 从 table 中选择 columns[:-1] 列作为自变量，columns[-1] 列作为因变量，进行线性回归
 
-cluster: 从 table 中选择 columns 列作为数据，进行聚类，聚类方法为 KMeans，聚类数目为 modelParams["k"]
+cluster: 从 table 中选择 columns 列作为数据，进行聚类，聚类方法为 KMeans，聚类数目为 modelParams["k"]，最后的输出会多两列
 
-当 model = cluster 时，需要传入 modelParams = {"k": 3}，否则 modelParams 可为空
+分别是 Label 和 predLabel 表示原始数据上的聚类结果和生成的测试点的聚类结果
+
+注意，当 model = cluster 时，需要传入 modelParams = {"k": 3}，指定聚类的类数（最好是设成一个用户指定的参数）否则 modelParams 可为空
 '''
 
 @app.post("/model", description=modelAPIDesc)
@@ -182,9 +221,10 @@ def createModel(model_config:Model)->ModelResponse:
             pred_xs = [pred_x.flatten() for pred_x in pred_xs]
             pred_y = model.predict(np.array(pred_xs).T)
             columns = model_config.columns
-            columns = columns + ["pred" + col for col in columns] + ["pred"]
+            columns.append("Label")
+            columns = columns + ["pred" + col for col in columns]
             pred_xs = [pred_x.tolist() for pred_x in pred_xs]
-            data = dict(zip(columns, ori_data + pred_xs + [pred_y.tolist()]))
+            data = dict(zip(columns, ori_data + [model.labels_.tolist()] + pred_xs + [pred_y.tolist()]))
         return ModelResponse(success=True, data=data)
     except Exception as e:
         return ModelResponse(success=False, message=str(e), data=None)
