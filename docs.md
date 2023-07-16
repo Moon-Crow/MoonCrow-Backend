@@ -13,7 +13,7 @@
 
 -------
 
-- status: 指示是否成功
+- success: 指示是否成功
 
 
 ##### post `/demo`
@@ -26,7 +26,7 @@
 
 ---------
 
-- status: 指示是否成功
+- success: 指示是否成功
 
 ##### get `/model`
 
