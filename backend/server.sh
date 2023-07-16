@@ -1,1 +1,2 @@
-uvicorn main:app --host 192.168.227.131 --port 6677 --reload
+HOST="192.168.227.131"
+uvicorn main:app --host $HOST --port 6677 --reload

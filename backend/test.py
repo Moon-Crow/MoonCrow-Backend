@@ -1,13 +1,15 @@
 from requests import post
 import json
 
-def request(api, data, host="192.168.227.131", port="6677"):
+HOST = "192.168.227.131"
+
+def request(api, data, host=HOST, port="6677"):
     return post(f"http://{host}:{port}{api}", data=json.dumps(data))
 
 def connect():
     print("connect")
     data = {
-        "name": "test",
+        "connName": "test",
         "database": "postgres",
         "user": "gauss",
         "password": "2023@gauss"
@@ -18,7 +20,7 @@ def connect():
 def show():
     print("show")
     data = {
-        "name": "test",
+        "connName": "test",
         "table": "test"
     }
     req = request("/show", data)
@@ -27,7 +29,7 @@ def show():
 def demo():
     print("demo")
     data = {
-        "name": "test",
+        "connName": "test",
         "table": "titanic",
         "dataset": "titanic"
     }
@@ -37,7 +39,7 @@ def demo():
 def model(model="cluster"):
     print("model")
     data= {
-        "name": "test",
+        "connName": "test",
         "table": "titanic",
         "model": model,
         "columns": ["Age","Pclass", "Survived"]
