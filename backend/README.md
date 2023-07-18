@@ -69,6 +69,4 @@ ssl_keyfile: "server.key"
 python run.py
 ```
 
-## 开发指南
-
-服务器的所有代码都在 `main.py` 中
+注意，服务器不再默认运行在 debug 模式下，即不再创建一个名为 `test` 的，连接 gauss 用户，密码 2023@gauss 的连接
