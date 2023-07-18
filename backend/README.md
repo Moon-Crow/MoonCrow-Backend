@@ -66,7 +66,15 @@ ssl_keyfile: "server.key"
 ## 启动
 
 ```shell
+python run.py --https
+```
+
+或
+
+```shell
 python run.py
 ```
 
-注意，服务器不再默认运行在 debug 模式下，即不再创建一个名为 `test` 的，连接 gauss 用户，密码 2023@gauss 的连接
+## Update
+
+2023-7-18: 更新了服务器启动脚本，增加了配置文件 `config.yaml`，支持 https 启动。增加了更多模型以及数据集。

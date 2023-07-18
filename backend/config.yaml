@@ -1,4 +1,4 @@
 host: "192.168.227.131"
-port: "6677"
+port: 6677
 ssl_certfile: "server.crt"
 ssl_keyfile: "server.key"
