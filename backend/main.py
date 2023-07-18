@@ -232,7 +232,6 @@ MiniBatchKMeans: 从 table 中选择 columns 列作为数据，进行聚类，�
 注意，当 model = cluster 时，需要传入 modelParams = {"k": 3}，指定聚类的类数（最好是设成一个用户指定的参数）否则 modelParams 可为空
 """
 
-
 @app.post("/model", description=modelAPIDesc)
 def createModel(model_config: Model) -> ModelResponse:
     try:
@@ -378,6 +377,8 @@ def createModel(model_config: Model) -> ModelResponse:
             columns = columns + ["pred" + col for col in columns]
             pred_xs = [pred_x.tolist() for pred_x in pred_xs]
             data = dict(zip(columns, ori_data + pred_xs + [pred_y.tolist()]))
+        else:
+            raise Exception("模型不存在")
         return ModelResponse(success=True, data=data)
     except Exception as e:
         return ModelResponse(success=False, message=str(e), data=None)
