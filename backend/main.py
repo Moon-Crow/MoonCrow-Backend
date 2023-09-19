@@ -96,7 +96,7 @@ functions = [
                 },
                 "columns": {
                     "type": "array",
-                    "description": "要查询的列，如果model是预测任务则输出数组的最后一个元素表示因变量，前面的表示自变量，例如询问y和a以及b的关系，则y是因变量，需要在输出数组的最后一个位置",
+                    "description": "要查询的列，如果model是预测任务则输出数组的最后一个元素表示因变量，前面的表示自变量，例如询问y和a以及b的关系，则y是因变量，需要在输出数组的最后一个位置，即[a,b,y]",
                     "items": {"type": "string", "description": "列名"},
                 },
             },
