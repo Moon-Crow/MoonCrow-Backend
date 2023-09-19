@@ -13,7 +13,10 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.cluster import KMeans
 from sklearn.cluster import MiniBatchKMeans
 import yaml
+import openai
+import json
 
+openai.api_key = os.environ.get("OPENAI_API_KEY")
 config = yaml.load(open("config.yaml", "r"), Loader=yaml.FullLoader)
 host = config["host"]
 
@@ -61,6 +64,62 @@ def createConnect(connect: NewConnect) -> NormalResponse:
         db = py_opengauss.open(generateConnectUrl(connect))
         connects.update({connect.connName: [db, connect]})
         return NormalResponse(success=True)
+    except Exception as e:
+        return NormalResponse(success=False, message=str(e))
+
+
+class Chat(BaseModel):
+    connName: str = "test"
+    content: str = "生成titanic表上，Survived列和Age以及Pclass的关系"
+
+
+class ChatResponse(BaseModel):
+    success: str = "success"
+    function_call: dict
+
+
+functions = [
+    {
+        "name": "model",
+        "description": "为数据库表上的指定列选择机器学习模型并建模",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "table": {
+                    "type": "string",
+                    "description": "要查询的表",
+                },
+                "model": {
+                    "type": "string",
+                    "enum": ["logistic", "svm", "kmeans"],
+                    "description": "要使用的机器学习模型，默认相关关系使用svm，分布使用kmeans",
+                },
+                "columns": {
+                    "type": "array",
+                    "description": "要查询的列，如果model是预测任务则输出数组的最后一个元素表示因变量，前面的表示自变量，例如询问y和a以及b的关系，则y是因变量，需要在输出数组的最后一个位置",
+                    "items": {"type": "string", "description": "列名"},
+                },
+            },
+            "required": ["table", "model", "columns"],
+        },
+    }
+]
+
+
+@app.post("/chat")
+def chat(c: Chat):
+    try:
+        messages = [
+            # {"role": "system", "content": ""},
+            {"role": "user", "content": c.content},
+        ]
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo-0613", messages=messages, functions=functions
+        )
+        print(response)
+        function_call = response["choices"][0]["message"]["function_call"]
+        function_call["arguments"] = json.loads(function_call["arguments"])
+        return ChatResponse(success=True, function_call=function_call)
     except Exception as e:
         return NormalResponse(success=False, message=str(e))
 
@@ -231,6 +290,7 @@ MiniBatchKMeans: 从 table 中选择 columns 列作为数据，进行聚类，�
 
 注意，当 model = cluster 时，需要传入 modelParams = {"k": 3}，指定聚类的类数（最好是设成一个用户指定的参数）否则 modelParams 可为空
 """
+
 
 @app.post("/model", description=modelAPIDesc)
 def createModel(model_config: Model) -> ModelResponse:

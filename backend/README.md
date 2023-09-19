@@ -78,3 +78,9 @@ python run.py
 ## Update
 
 2023-7-18: 更新了服务器启动脚本，增加了配置文件 `config.yaml`，支持 https 启动。增加了更多模型以及数据集。
+
+2023-9-19: 更新了chatGPT功能，为了安全，api_key从系统环境变量中获取，key找潘俊达要，之前的已经失效。
+
+```shell
+export OPENAI_API_KEY=your_key
+```
