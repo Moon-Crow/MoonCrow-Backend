@@ -11,8 +11,7 @@ gs_om -t start
 
 先创建名为 gauss 密码为 2023@gauss 的用户，并测试登录，如果你不知道怎么操作，参考：
 
-'''
-shell
+```shell
 [omm@bogon ~]$ gsql -d postgres -p 15400
 gsql ((openGauss 5.0.0 build a07d57c3) compiled at 2023-03-29 03:37:13 commit 0 last mr  )
 Non-SSL connection (SSL connection is recommended when requiring high-security)
@@ -26,7 +25,7 @@ Non-SSL connection (SSL connection is recommended when requiring high-security)
 Type "help" for help.
 
 openGauss=>     \q
-'''
+```
 
 ## 服务器准备
 
